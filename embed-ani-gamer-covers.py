@@ -178,7 +178,7 @@ if len(sys.argv) > 1:
                         help="顯示版本號碼。")
 
     args = parser.parse_args()
-
+    #print(args)
 
     # 僅輸入 sn 碼（而非網址）
     if len(args.url) < 7:
@@ -258,7 +258,7 @@ if len(sys.argv) > 1:
         if ep.cover_url != ep.visual_url:
             print("開始儲存動畫封面")
             write_pic(cover_file_path, mode, "cover")
-        elif args.download_visual:
+        elif args.download_visual != "not chose":
             print("\n失敗：此動畫沒有封面。")
         else:
             prompt_no_cover(args.url)
