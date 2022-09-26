@@ -113,6 +113,7 @@ def check_sn_format(sn_or_url):
 if len(sys.argv) > 1:
     parser = argparse.ArgumentParser(
         prog="python3 embed-ani-gamer-covers.py",
+        description="使用範例：python3 embed-ani-gamer-covers.py 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual\n會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。",
         epilog=f"GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers\n版本：{VERSION}",
         formatter_class = argparse.RawTextHelpFormatter)
     parser.add_argument("url",
