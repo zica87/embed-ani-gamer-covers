@@ -197,6 +197,8 @@ if len(sys.argv) > 1:
 
     try:
         ep = Episode(args.url)
+        # show title first
+        ep.title
     except FileNotFoundError:
         print(f"找不到此網址的動畫：\n{args.url}")
         # 找不到此網址的動畫：
@@ -284,6 +286,8 @@ else:
 
         try:
             ep = Episode(url)
+            # show title first
+            ep.title
         except FileNotFoundError:
             print(f"找不到此網址的動畫：\n{url}")
             # 找不到此網址的動畫：
