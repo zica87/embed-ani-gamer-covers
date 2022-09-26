@@ -1,2 +1,117 @@
-# embed-ani-gamer-covers
-下載／嵌入動畫瘋的封面／視覺圖。
+~~其實我還沒想好這程式要叫什麼名字~~
+
+## 功能
+給定 sn 碼或網址，即可：
+- 下載動畫瘋的封面／視覺圖。
+- 將動畫瘋的封面／視覺圖嵌入為 MP4 檔的封面（縮圖）。
+- 輸出[動畫資訊](#動畫資訊格式--內容)。
+
+## 目錄
+- [安裝說明](#安裝說明)
+  - [直接執行 Python 原始碼](#直接執行-python-原始碼)
+  - [以單個程式執行（exe）](#以單個程式執行exe)
+- [使用說明](#使用說明)
+  - [Windows、Linux、Android](#windowslinuxandroid)
+  - [引數說明 & 範例](#引數說明--範例)
+  - [互動模式](#互動模式)
+- [動畫資訊格式 & 內容](#動畫資訊格式--內容)
+
+# 安裝說明
+## 直接執行 Python 原始碼
+~~建議使用單個程式執行就不用裝這一堆程式，但是我還沒做~~  
+
+把那三個 .py 檔下載到某個資料夾，或是按右上角的 `Code` -> `Download ZIP`，再解壓縮。  
+
+請先安裝下列程式：
+- `python 3` （我自己是用 3.10 測試）
+
+以下可透過`pip`安裝
+- `mutagen` （嵌入縮圖用）
+- `questionary`（互動式介面（TUI）用）
+- `tomli_w`（寫入 TOML 用）
+- `requests`（下載網頁、圖片用）
+- `beautifulsoup4`（分析網頁用？）
+
+## 以單個程式執行（exe）
+~~還沒做~~
+
+# 使用說明
+## Windows、Linux、Android
+- `Windows`：打開程式所在的資料夾，點一下檔案總管上方的路徑欄空白處，輸入 `cmd`，按 `enter`鍵。  
+
+- `Linux`：~~Linux 用戶應該都知道怎麼開終端機，所以略過。~~  
+- `Android`：
+下載安裝[`Termux`](https://f-droid.org/zh_Hant/packages/com.termux/)。`cd`命令可以切換資料夾，輸入時按`Tab`（`Esc`下面那個按鈕）可以自動補全資料夾名。  
+例如`cd /sdcard/Download/embed-ani-gamer-covers-main/embed-ani-gamer-covers-main`
+
+
+## 引數說明 & 範例
+```
+zica@zica-VirtualBox:~$ py /home/zica/cover/embed-ani-gamer-covers.py -h
+usage: python3 embed-ani-gamer-covers.py [-h] [-m 檔名] [-v] [-c]
+    [-d 資料夾] [--download-visual [檔名（含路徑）]] [--download-cover [檔名（含路徑）]]
+    [--metadata [檔名（含路徑）]] [--overwrite | --no-overwrite] [--version] sn 碼或網址
+
+使用範例：python3 embed-ani-gamer-covers.py 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual
+會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。
+
+positional arguments:
+  sn 碼或網址               請在以下選項前面先輸入動畫的 sn 碼或網址。
+
+options:
+  -h, --help            show this help message and exit
+  -m 檔名, --mp4 檔名       要嵌入縮圖的 MP4 檔名。
+  -v, --embed-visual    嵌入視覺圖。
+  -c, --embed-cover     嵌入封面。
+                        也指定「嵌入視覺圖」選項的話則會檢查有無封面，
+                        有封面的話就嵌入封面，沒有的話就嵌入視覺圖。
+  -d 資料夾, --directory 資料夾, --folder 資料夾
+                        下載下來的圖片要儲存到的資料夾，僅嵌入不下載的話免填。
+                        要下載但不填的話表示與 MP4 檔同資料夾。
+  --download-visual [檔名（含路徑）]
+                        下載視覺圖。
+                        後面接要儲存的檔名（含路徑），
+                        不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。
+  --download-cover [檔名（含路徑）]
+                        下載封面。
+                        後面接要儲存的檔名（含路徑），
+                        不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。
+  --metadata [檔名（含路徑）]  以 TOML 格式儲存動畫資訊。
+                        後面接要儲存的檔名（含路徑），
+                        不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。
+  --overwrite           若已有與要儲存的檔案同名的檔案就覆寫。
+  --no-overwrite        若已有與要儲存的檔案同名的檔案就退出程式，不覆寫。
+  --version             顯示版本號碼。
+
+GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers
+版本：0.1.0
+
+```
+## 互動模式
+也可以不帶引數，只輸入`python3 embed-ani-gamer-covers.py`，例如：
+```
+zica@zica-VirtualBox:~$ py /home/zica/cover/embed-ani-gamer-covers.py
+未選擇選項（引數），因此進入互動模式
+? 請輸入 sn 碼或網址： 16231
+? 請選擇要程式做的事情： 下載封面
+? 請輸入下載下來的圖片要儲存到哪個資料夾：
+ /home/zica/cover/
+開始尋找封面圖網址
+開始尋找視覺圖網址
+開始尋找此集標題
+標題：Lapis Re：LiGHTs [1]
+開始儲存動畫封面
+開始下載封面
+順利完成！
+```
+
+
+# 動畫資訊格式 & 內容
+採用簡潔的 TOML 格式，例如：
+```toml
+"網址" = "https://ani.gamer.com.tw/animeVideo.php?sn=16231"
+"此季標題" = "Lapis Re：LiGHTs"
+"標題" = "Lapis Re：LiGHTs [1]"
+"視覺圖網址" = "https://p2.bahamut.com.tw/B/2KU/69/70171e9beae7a766b716bb16901934h5.JPG"
+"封面網址" = "https://p2.bahamut.com.tw/B/2KU/61/55c1764efa50f58e7ae6dbbfb9193w15.JPG"
+```
