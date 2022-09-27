@@ -50,19 +50,6 @@ def prompt_no_cover(url):
     print("退出程式")
     sys.exit(1)
 
-def check_mp4_exist(path):
-    if not os.path.isfile(path):
-        print("找不到 MP4 檔欸，是不是檔名打錯了？")
-        print("檔名：")
-        print(path)
-        print("退出程式")
-        sys.exit(1)
-
-def is_dir(path):
-    if os.path.isdir(path):
-        return True
-    return "資料夾無效、或是並非資料夾。"
-
 def is_file(path):
     if os.path.isfile(path):
         return True
@@ -236,7 +223,12 @@ if len(sys.argv) > 1:
             sys.exit(1)
 
     if args.mp4:
-        check_mp4_exist(args.mp4)
+        if not os.path.isfile(args.mp4):
+            print("找不到 MP4 檔欸，是不是檔名打錯了？")
+            print("檔名：")
+            print(args.mp4)
+            print("退出程式")
+            sys.exit(1)
 
     try:
         ep = Episode(args.url)
