@@ -84,7 +84,7 @@ def write_pic(path, mode, vi_or_co: str):
         print("退出程式")
         sys.exit(1)
 
-def check_folder_exists(path:str) -> None:
+def ensure_folder_exists(path:str) -> None:
     if os.path.exists(path):
         return None
     # else:
@@ -107,7 +107,7 @@ def determine_path(arg, file_name:str) -> str:
     global FOLDER_PATH
     if arg:
         parent = os.path.dirname(arg)
-        check_folder_exists(parent)
+        ensure_folder_exists(parent)
         return arg
     # use -d argument
     if FOLDER_PATH:
@@ -118,7 +118,7 @@ def determine_path(arg, file_name:str) -> str:
             print("退出程式")
             sys.exit(1)
 
-        check_folder_exists(args.directory)
+        ensure_folder_exists(args.directory)
         if os.path.isdir(args.directory):
             FOLDER_PATH = args.directory
             return os.path.join(args.directory, file_name)
@@ -140,7 +140,13 @@ def check_sn_format(sn_or_url):
         return True
     return "格式錯誤！範例 sn 碼：16231  範例網址：https://ani.gamer.com.tw/animeVideo.php?sn=16231"
 
-
+def valid_path(path:str, fname:str) -> str:
+    if os.path.isdir(path):
+        ensure_folder_exists(path)
+        return os.path.join(path, fname)
+    else:
+        ensure_folder_exists(os.path.dirname(path))
+        return path
 
 if len(sys.argv) > 1:
     parser = argparse.ArgumentParser(
@@ -360,37 +366,34 @@ else:
             else:
                 prompt_no_cover(url)
         case "下載視覺圖":
-            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾：\n",
+            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
                                     only_directories = True
                                    ).ask()
-            check_folder_exists(path)
-            path = os.path.join(path, ep.series_title + " 視覺圖.jpg")
+            path = valid_path(path, ep.series_title + " 視覺圖.jpg")
             mode = file_write_mode(path)
             print("開始儲存動畫視覺圖")
             write_pic(path, mode, "visual")
         case "下載封面":
-            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾：\n",
+            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
                                     only_directories = True
                                     ).ask()
-            check_folder_exists(path)
             if ep.cover_url != ep.visual_url:
-                path = os.path.join(path, ep.title + ".jpg")
+                path = valid_path(path, ep.title + ".jpg")
                 mode = file_write_mode(path)
                 print("開始儲存動畫封面")
                 write_pic(path, mode, "cover")
             elif questionary.confirm("此集沒有封面欸，要下載視覺圖嗎？").ask():
-                path = os.path.join(path, ep.series_title + " 視覺圖.jpg")
+                path = valid_path(path, ep.series_title + " 視覺圖.jpg")
                 mode = file_write_mode(path)
                 print("開始儲存動畫視覺圖")
                 write_pic(path, mode, "visual")
             else:
                 prompt_no_cover(url)
         case "儲存動畫資訊":
-            path = questionary.path("請輸入要儲存到哪個資料夾：\n",
+            path = questionary.path("請輸入要儲存到哪個資料夾（或直接指定檔名）：\n",
                                     only_directories = True
                                     ).ask()
-            check_folder_exists(path)
-            path = os.path.join(path, f"{ep.title} 資訊.toml")
+            path = valid_path(path, ep.title + " 資訊.toml")
             mode = file_write_mode(path)
             print("開始儲存動畫資訊")
             try:
