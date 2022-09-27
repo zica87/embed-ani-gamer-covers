@@ -23,6 +23,7 @@ class Episode:
         self.__cover_url    = None
         self.__visual_data  = None
         self.__visual_url   = None
+        self.__time         = None
 
         self.soup = get_soup(url)
         if "動畫瘋" not in self.soup.title.string:
@@ -32,11 +33,22 @@ class Episode:
         data = {"網址":self.url,
                 "此季標題":self.series_title,
                 "標題":self.title,
+                "上架時間":self.time,
                 "視覺圖網址":self.visual_url
                }
         if self.cover_url != self.visual_url:
             data["封面網址"] = self.cover_url
         return data
+
+    @property
+    def time(self):
+        if self.__time:
+            return self.__time
+        # 上架時間：2022/09/25 02:00
+        # 5 == len("上架時間：")
+        print("開始尋找上架時間")
+        self.__time = self.soup.find("div", class_="anime_info_detail").p.string[5:]
+        return self.__time
 
     @property
     def url(self):
