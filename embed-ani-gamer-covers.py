@@ -1,4 +1,4 @@
-import os, sys, argparse
+import os, sys, argparse, time
 import questionary
 import tomli_w
 from get_metadata import Episode
@@ -400,3 +400,5 @@ else:
 
 
 print("順利完成！")
+print("5 秒鐘後關閉程式")
+time.sleep(5)
