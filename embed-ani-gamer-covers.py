@@ -84,11 +84,43 @@ def write_pic(path, mode, vi_or_co: str):
         print("退出程式")
         sys.exit(1)
 
+def check_folder_exists(path:str) -> None:
+    if os.path.exists(path):
+        return None
+    # else:
+    print("指定資料夾不存在：")
+    print('\t' + path)
+    if "args" in globals() and args.dont_make_directory:
+        print("退出程式")
+        sys.exit(1)
+    else:
+        print("開始建立資料夾")
+        try:
+            os.makedirs(path)
+        except Exception as err:
+            print("建立資料夾時出錯，詳情：")
+            print(err)
+            print("退出程式")
+            sys.exit(1)
+
 def determine_path(arg, file_name:str) -> str:
+    global FOLDER_PATH
     if arg:
+        parent = os.path.dirname(arg)
+        check_folder_exists(parent)
         return arg
+    # use -d argument
+    if FOLDER_PATH:
+        return os.path.join(FOLDER_PATH, file_name)
     if args.directory:
+        if os.path.isfile(args.directory):
+            print("\n-d 後請加資料夾路徑，而非檔案！")
+            print("退出程式")
+            sys.exit(1)
+
+        check_folder_exists(args.directory)
         if os.path.isdir(args.directory):
+            FOLDER_PATH = args.directory
             return os.path.join(args.directory, file_name)
         else:
             print("資料夾無效。路徑：")
@@ -96,8 +128,8 @@ def determine_path(arg, file_name:str) -> str:
             print("退出程式")
             sys.exit(1)
     elif args.mp4:
-        return os.path.join(os.path.dirname(args.mp4),
-                            file_name)
+        FOLDER_PATH = os.path.dirname(args.mp4)
+        return os.path.join(FOLDER_PATH, file_name)
     else:
         print("請指定檔案要儲存至何處！")
         print("退出程式")
@@ -171,6 +203,10 @@ if len(sys.argv) > 1:
     overw_group.add_argument("--no-overwrite",
                         action="store_true",
                         help="若已有與要儲存的檔案同名的檔案就退出程式，不覆寫。")
+    parser.add_argument("--dont-make-directory",
+                        "--dont-make-folder",
+                        action="store_true",
+                        help="不存在指定資料夾時不建立資料夾，直接退出程式。")
     parser.add_argument("--version",
                         action="version",
                         version=VERSION,
@@ -178,6 +214,8 @@ if len(sys.argv) > 1:
 
     args = parser.parse_args()
     #print(args)
+
+    FOLDER_PATH = None
 
     # 僅輸入 sn 碼（而非網址）
     if len(args.url) < 7:
@@ -250,13 +288,12 @@ if len(sys.argv) > 1:
 
     # "not chose" is default value, so user didn't choose
     if args.download_cover != "not chose":
-        cover_file_path = determine_path(args.download_cover,
-                                         f"{ep.title}.jpg")
-
-        # 無同名檔案、或有同名檔案但使用者決定覆寫
-        mode = file_write_mode(cover_file_path)
         # 確定有封面
         if ep.cover_url != ep.visual_url:
+            cover_file_path = determine_path(args.download_cover,
+                                             f"{ep.title}.jpg")
+            # 無同名檔案、或有同名檔案但使用者決定覆寫
+            mode = file_write_mode(cover_file_path)
             print("開始儲存動畫封面")
             write_pic(cover_file_path, mode, "cover")
         elif args.download_visual != "not chose":
@@ -324,20 +361,18 @@ else:
                 prompt_no_cover(url)
         case "下載視覺圖":
             path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾：\n",
-                                    validate = is_dir,
-                                    only_directories = True,
-                                    file_filter = is_dir
+                                    only_directories = True
                                    ).ask()
+            check_folder_exists(path)
             path = os.path.join(path, ep.series_title + " 視覺圖.jpg")
             mode = file_write_mode(path)
             print("開始儲存動畫視覺圖")
             write_pic(path, mode, "visual")
         case "下載封面":
             path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾：\n",
-                                    validate = is_dir,
-                                    only_directories = True,
-                                    file_filter = is_dir
+                                    only_directories = True
                                     ).ask()
+            check_folder_exists(path)
             if ep.cover_url != ep.visual_url:
                 path = os.path.join(path, ep.title + ".jpg")
                 mode = file_write_mode(path)
@@ -352,10 +387,9 @@ else:
                 prompt_no_cover(url)
         case "儲存動畫資訊":
             path = questionary.path("請輸入要儲存到哪個資料夾：\n",
-                                    validate = is_dir,
-                                    only_directories = True,
-                                    file_filter = is_dir
+                                    only_directories = True
                                     ).ask()
+            check_folder_exists(path)
             path = os.path.join(path, f"{ep.title} 資訊.toml")
             mode = file_write_mode(path)
             print("開始儲存動畫資訊")
