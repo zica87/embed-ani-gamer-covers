@@ -21,8 +21,8 @@
 - `Windows`、`Linux`：下載執行檔，放到任意資料夾即可。
 - `Android`：
   1. 下載安裝[`Termux`](https://f-droid.org/zh_Hant/packages/com.termux/)。輸入時按`Tab`（`Esc`下面那個按鈕）可以自動補全資料夾名／檔名。
-  2. 接著要把下載下來的執行檔移到`Termux`的目錄下，例如：`mv /sdcard/Download/embed-ani-gamer-covers $HOME`（`mv`是移動檔案的命令）
-  3. 最後讓程式可以執行（加上`執行`的許可權）：`chmod +x embed-ani-gamer-covers`
+  2. 接著要把下載下來的執行檔移到`Termux`的目錄下，例如：`mv /sdcard/Download/embed-ani-gamer-covers-android $HOME`（`mv`是移動檔案的命令）
+  3. 最後讓程式可以執行（加上`執行`的許可權）：`chmod +x embed-ani-gamer-covers-android`
 
 ## 直接執行 Python 原始碼
 **建議[使用執行檔](#執行檔)**，就不用裝這一堆程式。  
@@ -48,13 +48,13 @@
 
 ## 引數說明 & 範例
 ```
-zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers -h
-usage: embed-ani-gamer-covers [-h] [-m 檔名] [-v] [-c] [-d 資料夾] [--download-visual [檔名（含路徑）]]
+zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux -h
+usage: embed-ani-gamer-covers-linux [-h] [-m 檔名] [-v] [-c] [-d 資料夾] [--download-visual [檔名（含路徑）]]
                               [--download-cover [檔名（含路徑）]] [--metadata [檔名（含路徑）]]
                               [--overwrite | --no-overwrite] [--version]
                               sn 碼或網址
 
-使用範例：embed-ani-gamer-covers 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual
+使用範例：embed-ani-gamer-covers-linux 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual
 會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。
 
 positional arguments:
@@ -92,7 +92,7 @@ GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers
 ## 互動模式
 也可以不帶引數，只輸入`embed-ani-gamer-covers`，例如：
 ```
-zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers
+zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux
 未選擇選項（引數），因此進入互動模式
 ? 請輸入 sn 碼或網址： 16231
 開始尋找此集標題
