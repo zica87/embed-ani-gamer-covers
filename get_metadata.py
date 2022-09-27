@@ -24,6 +24,7 @@ class Episode:
         self.__visual_data  = None
         self.__visual_url   = None
         self.__time         = None
+        self.__agency         = None
 
         self.soup = get_soup(url)
         if "動畫瘋" not in self.soup.title.string:
@@ -34,11 +35,22 @@ class Episode:
                 "此季標題":self.series_title,
                 "標題":self.title,
                 "上架時間":self.time,
+                "台灣代理":self.agency,
                 "視覺圖網址":self.visual_url
                }
         if self.cover_url != self.visual_url:
             data["封面網址"] = self.cover_url
         return data
+
+    @property
+    def agency(self):
+        if self.__agency:
+            return self.__agency
+        
+        print("開始尋找台灣代理")
+        t = self.soup.find("ul", class_="data_type").find_all("li")
+        self.__agency = t[3].next_element.next_element.next_element
+        return self.__agency
 
     @property
     def time(self):
