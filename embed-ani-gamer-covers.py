@@ -137,8 +137,10 @@ def valid_path(path:str, fname:str) -> str:
 
 if len(sys.argv) > 1:
     parser = argparse.ArgumentParser(
-        description="使用範例：%(prog)s 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual\n會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。",
-        epilog=f"GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers\n版本：{VERSION}",
+        description="使用範例：%(prog)s 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual\n"\
+                    "會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。",
+        epilog= "GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers\n"\
+               f"版本：{VERSION}",
         formatter_class = argparse.RawTextHelpFormatter)
     parser.add_argument("url",
                         metavar="sn 碼或網址",
@@ -154,41 +156,36 @@ if len(sys.argv) > 1:
     parser.add_argument("-c",
                         "--embed-cover",
                         action="store_true",
-                        help="嵌入封面。\n也指定「嵌入視覺圖」選項的話則會檢查有無封面，\n有封面的話就嵌入封面，沒有的話就嵌入視覺圖。")
-                        #     嵌入封面。
-                        #     也指定「嵌入視覺圖」選項的話則會檢查有無封面，
-                        #     有封面的話就嵌入封面，沒有的話就嵌入視覺圖。
+                        help="嵌入封面。\n"\
+                             "也指定「嵌入視覺圖」選項的話則會檢查有無封面，\n"\
+                             "有封面的話就嵌入封面，沒有的話就嵌入視覺圖。")
     parser.add_argument("-d",
                         "--directory",
                         "--folder",
                         metavar="資料夾",
-                        help="下載下來的圖片要儲存到的資料夾，僅嵌入不下載的話免填。\n要下載但不填的話表示與 MP4 檔同資料夾。")
-                        #     下載下來的圖片要儲存到的資料夾，僅嵌入不下載的話免填。
-                        #     要下載但不填的話表示與 MP4 檔同資料夾。")
+                        help="下載下來的圖片要儲存到的資料夾，僅嵌入不下載的話免填。\n"\
+                             "要下載但不填的話表示與 MP4 檔同資料夾。")
     parser.add_argument("--download-visual",
                         nargs='?',
                         default="not chose",
                         metavar="檔名（含路徑）",
-                        help="下載視覺圖。\n後面接要儲存的檔名（含路徑），\n不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
-                        #     下載視覺圖。
-                        #     後面接要儲存的檔名（含路徑），
-                        #     不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。"
+                        help="下載視覺圖。\n"\
+                             "後面接要儲存的檔名（含路徑），\n"\
+                             "不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
     parser.add_argument("--download-cover",
                         nargs='?',
                         default="not chose",
                         metavar="檔名（含路徑）",
-                        help="下載封面。\n後面接要儲存的檔名（含路徑），\n不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
-                        #     下載封面。
-                        #     後面接要儲存的檔名（含路徑），
-                        #     不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。"
+                        help="下載封面。\n"\
+                             "後面接要儲存的檔名（含路徑），\n"\
+                             "不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
     parser.add_argument("--metadata",
                         nargs='?',
                         default="not chose",
                         metavar="檔名（含路徑）",
-                        help="以 TOML 格式儲存動畫資訊。\n後面接要儲存的檔名（含路徑），\n不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
-                        #     以 TOML 格式儲存動畫資訊。
-                        #     後面接要儲存的檔名（含路徑），
-                        #     不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。"
+                        help="以 TOML 格式儲存動畫資訊。\n"\
+                             "後面接要儲存的檔名（含路徑），\n"\
+                             "不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
     overw_group = parser.add_mutually_exclusive_group()
     overw_group.add_argument("--overwrite",
                         action="store_true",
