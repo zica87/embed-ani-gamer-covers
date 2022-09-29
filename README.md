@@ -25,26 +25,30 @@
   3. 最後讓程式可以執行（加上`執行`的許可權）：`chmod +x embed-ani-gamer-covers-android`
 
 ## 直接執行 Python 原始碼
-**建議[使用執行檔](#執行檔)**，就不用裝這一堆程式。  
+**建議[使用執行檔](#執行檔)**，就不用這麼麻煩。
 
-把那三個 .py 檔下載到某個資料夾，或是按右上角的 `Code` -> `Download ZIP`，再解壓縮。  
-以原始碼執行的話命令前面要加上`python3`，例如：`python3 embed-ani-gamer-covers.py`  
 請先安裝下列程式：
-- `python 3` （我自己是用 3.10 測試）
+- `python 3`（我自己是用 3.10 測試）
+- `poetry`（安裝 dependency 用）
+- `git`（方便更新，可不裝）
 
-以下可透過`pip`安裝
-- `mutagen` （嵌入縮圖用）
-- `questionary`（互動式介面（TUI）用）
-- `tomli_w`（寫入 TOML 用）
-- `requests`（下載網頁、圖片用）
-- `beautifulsoup4`（分析網頁用？）
+下載檔案：
+- `git clone https://github.com/zica87/embed-ani-gamer-covers.git`
+
+- 或是按右上角的 `Code` -> `Download ZIP`，再解壓縮。
+
+安裝 dependency：
+- `poetry install`
+
+執行：
+- 請使用：`poetry run python3 embed-ani-gamer-covers [引數]`
 
 # 使用說明
 ## Windows、Linux、Android
-- `Windows`：打開程式所在的資料夾，點一下檔案總管上方的路徑欄空白處，輸入 `cmd`，按 `enter`鍵。  
+- `Windows`：打開程式所在的資料夾，點一下檔案總管上方的路徑欄空白處，輸入 `cmd`，按 `enter`鍵。
   - 或是直接點兩下就可以進入互動模式。不過這樣程式執行完或出錯的話會馬上關掉，如果有 bug 的話不易偵錯，所以不太推薦。
 
-- `Linux`：~~Linux 用戶應該都知道怎麼開終端機，所以略過。~~  
+- `Linux`：~~Linux 用戶應該都知道怎麼開終端機，所以略過。~~
 - `Android`：照[上面步驟](#執行檔)設置完後，直接打命令即可（程式名前面要加上`./`，如下）。
 
 ## 引數說明 & 範例

@@ -1,5 +1,0 @@
-mutagen
-questionary
-tomli_w
-requests
-beautifulsoup4
