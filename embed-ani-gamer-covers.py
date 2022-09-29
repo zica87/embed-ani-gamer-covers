@@ -135,6 +135,24 @@ def valid_path(path:str, fname:str) -> str:
         ensure_folder_exists(os.path.dirname(path))
         return path
 
+def select_metadata_fields(ALL_FIELDS:dict) -> dict:
+    choices:list = []
+    data:dict = {}
+    for field in ALL_FIELDS.keys():
+        choices.append(questionary.Choice(field, checked=True))
+    while True:
+        for field in questionary.checkbox("請選擇要儲存的欄位：\n"\
+                                        "反白為要選\n"\
+                                        "按空白鍵切換選／不選，enter 鍵送出\n"\
+                                        "預設為全選 ",
+                                        choices = choices).ask():
+            data[field] = ALL_FIELDS[field]
+        if data:
+            return data
+        print("\n您未選取任何一個欄位！")
+        time.sleep(2)
+        print("重新選取")
+
 if len(sys.argv) > 1:
     parser = argparse.ArgumentParser(
         description="使用範例：%(prog)s 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual\n"\
@@ -186,6 +204,14 @@ if len(sys.argv) > 1:
                         help="以 TOML 格式儲存動畫資訊。\n"\
                              "後面接要儲存的檔名（含路徑），\n"\
                              "不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。")
+    parser.add_argument("--select",
+                        nargs='?',
+                        default="not chose",
+                        metavar="要儲存的欄位",
+                        help="在互動模式下選擇要儲存哪些動畫資料。\n"\
+                             "也可以直接在後面加上要儲存哪些欄位，例如：\n"\
+                             "--select \"標題 上架時間 台灣代理\"")
+
     overw_group = parser.add_mutually_exclusive_group()
     overw_group.add_argument("--overwrite",
                         action="store_true",
@@ -241,13 +267,28 @@ if len(sys.argv) > 1:
 
     # write metadata
     if args.metadata != "not chose":
+        ALL_FIELDS:dict = ep.metadata_as_dict()
+        if args.select == "not chose":
+            data:dict = ALL_FIELDS
+        elif args.select:
+            data:dict = {}
+            try:
+                for field in args.select.split():
+                    data[field] = ALL_FIELDS[field]
+            except KeyError as not_field:
+                print(f"\n錯誤！沒有這個欄位：{not_field}")
+                print("退出程式")
+                sys.exit(1)
+        else:
+            data:dict = select_metadata_fields(ALL_FIELDS)
+
         metadata_file_path = determine_path(
             args.metadata, f"{ep.title} 資訊.toml")
         mode = file_write_mode(metadata_file_path)
         print("開始儲存動畫資訊")
         try:
             with open(metadata_file_path, mode) as f:
-                tomli_w.dump(ep.metadata_as_dict(), f)
+                tomli_w.dump(data, f)
         except Exception as err:
             print("儲存動畫資訊時出錯，詳情：")
             print(err)
@@ -379,6 +420,7 @@ else:
             else:
                 prompt_no_cover(url)
         case "儲存動畫資訊":
+            data:dict = select_metadata_fields(ep.metadata_as_dict())
             path = questionary.path("請輸入要儲存到哪個資料夾（或直接指定檔名）：\n",
                                     only_directories = True
                                     ).ask()
@@ -387,7 +429,7 @@ else:
             print("開始儲存動畫資訊")
             try:
                 with open(path, mode) as f:
-                    tomli_w.dump(ep.metadata_as_dict(), f)
+                    tomli_w.dump(data, f)
             except Exception as err:
                 print("儲存動畫資訊時出錯，詳情：")
                 print(err)
