@@ -368,7 +368,7 @@ else:
             break
 
 
-    task = questionary.select("請選擇要程式做的事情：",
+    task:str = questionary.select("請選擇要程式做的事情：",
                               instruction="（按方向鍵上／下選擇）",
                               choices=["嵌入視覺圖",
                                        "嵌入封面",
@@ -377,64 +377,64 @@ else:
                                        "儲存動畫資訊"
                                       ]).ask()
 
-    match task:
-        case "嵌入視覺圖":
-            mp4 = questionary.path("請輸入要嵌入封面的 MP4 檔：\n",
-                                   validate = is_file,
-                                   file_filter = is_file
-                                  ).ask()
+    if task == "嵌入視覺圖":
+        mp4 = questionary.path("請輸入要嵌入封面的 MP4 檔：\n",
+                                validate = is_file,
+                                file_filter = is_file
+                                ).ask()
+        embed(ep.visual_data, mp4)
+    elif task == "嵌入封面":
+        mp4 = questionary.path("請輸入要嵌入封面的 MP4 檔：\n",
+                                validate = is_file,
+                                file_filter = is_file
+                                ).ask()
+        if ep.cover_url != ep.visual_url:
+            embed(ep.cover_data, mp4)
+        elif questionary.confirm("此集沒有封面欸，要嵌入視覺圖嗎？").ask():
             embed(ep.visual_data, mp4)
-        case "嵌入封面":
-            mp4 = questionary.path("請輸入要嵌入封面的 MP4 檔：\n",
-                                   validate = is_file,
-                                   file_filter = is_file
-                                  ).ask()
-            if ep.cover_url != ep.visual_url:
-                embed(ep.cover_data, mp4)
-            elif questionary.confirm("此集沒有封面欸，要嵌入視覺圖嗎？").ask():
-                embed(ep.visual_data, mp4)
-            else:
-                prompt_no_cover(url)
-        case "下載視覺圖":
-            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
-                                    only_directories = True
-                                   ).ask()
+        else:
+            prompt_no_cover(url)
+    elif task == "下載視覺圖":
+        path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
+                                only_directories = True
+                                ).ask()
+        path = valid_path(path, ep.series_title + " 視覺圖.jpg")
+        mode = file_write_mode(path)
+        print("開始儲存動畫視覺圖")
+        write_pic(path, mode, "visual")
+    elif task == "下載封面":
+        path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
+                                only_directories = True
+                                ).ask()
+        if ep.cover_url != ep.visual_url:
+            path = valid_path(path, ep.title + ".jpg")
+            mode = file_write_mode(path)
+            print("開始儲存動畫封面")
+            write_pic(path, mode, "cover")
+        elif questionary.confirm("此集沒有封面欸，要下載視覺圖嗎？").ask():
             path = valid_path(path, ep.series_title + " 視覺圖.jpg")
             mode = file_write_mode(path)
             print("開始儲存動畫視覺圖")
             write_pic(path, mode, "visual")
-        case "下載封面":
-            path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
-                                    only_directories = True
-                                    ).ask()
-            if ep.cover_url != ep.visual_url:
-                path = valid_path(path, ep.title + ".jpg")
-                mode = file_write_mode(path)
-                print("開始儲存動畫封面")
-                write_pic(path, mode, "cover")
-            elif questionary.confirm("此集沒有封面欸，要下載視覺圖嗎？").ask():
-                path = valid_path(path, ep.series_title + " 視覺圖.jpg")
-                mode = file_write_mode(path)
-                print("開始儲存動畫視覺圖")
-                write_pic(path, mode, "visual")
-            else:
-                prompt_no_cover(url)
-        case "儲存動畫資訊":
-            data:dict = select_metadata_fields(ep.metadata_as_dict())
-            path = questionary.path("請輸入要儲存到哪個資料夾（或直接指定檔名）：\n",
-                                    only_directories = True
-                                    ).ask()
-            path = valid_path(path, ep.title + " 資訊.toml")
-            mode = file_write_mode(path)
-            print("開始儲存動畫資訊")
-            try:
-                with open(path, mode) as f:
-                    tomli_w.dump(data, f)
-            except Exception as err:
-                print("儲存動畫資訊時出錯，詳情：")
-                print(err)
-                print("退出程式")
-                sys.exit(1)
+        else:
+            prompt_no_cover(url)
+    # elif task == "儲存動畫資訊":
+    else:
+        data:dict = select_metadata_fields(ep.metadata_as_dict())
+        path = questionary.path("請輸入要儲存到哪個資料夾（或直接指定檔名）：\n",
+                                only_directories = True
+                                ).ask()
+        path = valid_path(path, ep.title + " 資訊.toml")
+        mode = file_write_mode(path)
+        print("開始儲存動畫資訊")
+        try:
+            with open(path, mode) as f:
+                tomli_w.dump(data, f)
+        except Exception as err:
+            print("儲存動畫資訊時出錯，詳情：")
+            print(err)
+            print("退出程式")
+            sys.exit(1)
 
 
 
