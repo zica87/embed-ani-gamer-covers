@@ -1,6 +1,8 @@
 import os, sys, argparse, time
+
 import questionary
 import tomli_w
+
 from get_metadata import Episode
 from embed_cover import embed
 
@@ -44,7 +46,7 @@ def file_write_mode(path):
     #         print("請輸入 Y 或 N！")
 
 def prompt_no_cover(url):
-    print("\n失敗：此動畫沒有封面。")
+    print("\n失敗：此集沒有封面。")
     print("網址：")
     print(url)
     print("退出程式")
@@ -57,7 +59,7 @@ def is_file(path):
 
 def write_pic(path, mode, vi_or_co: str):
     try:
-        with open (path, mode) as f:
+        with open(path, mode) as f:
             if vi_or_co == "visual":
                 f.write(ep.visual_data)
             elif vi_or_co == "cover":
@@ -142,16 +144,17 @@ def select_metadata_fields(ALL_FIELDS:dict) -> dict:
         choices.append(questionary.Choice(field, checked=True))
     while True:
         for field in questionary.checkbox("請選擇要儲存的欄位：\n"\
-                                        "反白為要選\n"\
-                                        "按空白鍵切換選／不選，enter 鍵送出\n"\
-                                        "預設為全選 ",
-                                        choices = choices).ask():
+                                          "反白為要選\n"\
+                                          "按空白鍵切換選／不選，enter 鍵送出\n"\
+                                          "預設為全選 ",
+                                          choices = choices).ask():
             data[field] = ALL_FIELDS[field]
         if data:
             return data
         print("\n您未選取任何一個欄位！")
         time.sleep(2)
         print("重新選取")
+
 
 if len(sys.argv) > 1:
     parser = argparse.ArgumentParser(
@@ -166,7 +169,9 @@ if len(sys.argv) > 1:
     parser.add_argument("-m",
                         "--mp4",
                         metavar="檔名",
-                        help="要嵌入縮圖的 MP4 檔名。")
+                        help="要嵌入縮圖的 MP4 檔名。\n"\
+                             "若為資料夾則表示整季的影片都要嵌入封面。\n"\
+                             "目前僅支援檔名與動畫瘋的標題相同的 MP4。")
     parser.add_argument("-v",
                         "--embed-visual",
                         action="store_true",
@@ -245,14 +250,6 @@ if len(sys.argv) > 1:
             print("退出程式")
             sys.exit(1)
 
-    if args.mp4:
-        if not os.path.isfile(args.mp4):
-            print("找不到 MP4 檔欸，是不是檔名打錯了？")
-            print("檔名：")
-            print(args.mp4)
-            print("退出程式")
-            sys.exit(1)
-
     try:
         ep = Episode(args.url)
         # show title first
@@ -297,27 +294,104 @@ if len(sys.argv) > 1:
 
 
     # embedding
+
+    # no need bcz this program is simple?
+    # class EmbedModes(IntEnum):
+    #     cover_then_visual = 1
+    #     cover  = 2
+    #     visual = 3
+
     if args.embed_cover:
-        if not args.mp4:
-            print("\n請提供 MP4 檔名。")
-            print("退出程式")
-            sys.exit(1)
-        if ep.cover_url != ep.visual_url:
-            print("開始嵌入封面")
-            embed(ep.cover_data, args.mp4)
-        elif args.embed_visual:
-            print("\n此動畫沒有封面。")
-            print("開始嵌入視覺圖")
-            embed(ep.visual_data, args.mp4)
+        if args.embed_visual:
+            embed_mode = 1
         else:
-            prompt_no_cover(args.url)
+            embed_mode = 2
     elif args.embed_visual:
-        if not args.mp4:
-            print("\n請提供 MP4 檔名。")
+        embed_mode = 3
+    else:
+        embed_mode = None
+
+    if embed_mode:
+        if not args.mp4:       
+            print("\n未提供 MP4 檔名。")
             print("退出程式")
             sys.exit(1)
-        print("開始嵌入視覺圖")
-        embed(ep.visual_data, args.mp4)
+        if not (os.path.isfile(args.mp4) or os.path.isdir(args.mp4)):
+            print("\nMP4 檔路徑無效：")
+            print(args.mp4)
+            print("退出程式")
+            sys.exit(1)
+        # embed one file
+        if os.path.isfile(args.mp4):
+            if embed_mode != 3:
+                if ep.cover_url != ep.visual_url:
+                    print("開始嵌入封面")
+                    embed(ep.cover_data, args.mp4)
+                else:
+                    print("\n此集沒有封面。")
+                    # 1 == cover then visual
+                    if embed_mode == 1:
+                        embed_mode = 3
+                    else:
+                        prompt_no_cover(ep.url)
+            # 3 == only visual
+            if embed_mode == 3:
+                print("開始嵌入視覺圖")
+                embed(ep.visual_data, args.mp4)
+
+        # embed whole season
+        else:
+            if embed_mode==3:
+                VISUAL_DATA = ep.visual_data
+            else:
+                VISUAL_URL = ep.visual_url
+                if embed_mode==1:
+                    VISUAL_DATA = ep.visual_data
+            for ep_url in ep.whole_season_url():
+                print()
+                current_ep = Episode(ep_url)
+                path = os.path.join(args.mp4, current_ep.title + ".mp4")
+                if not os.path.isfile(path):
+                    print(f"未找到 {current_ep.title}.mp4")
+                else:
+                    if embed_mode != 3:
+                        if current_ep.cover_url != VISUAL_URL:
+                            print("開始嵌入封面至：")
+                            print(current_ep.title + ".mp4")
+                            embed(current_ep.cover_data, path)
+                        else:
+                            print("\n此集沒有封面。")
+                            # 1 == cover then visual
+                            if embed_mode == 1:
+                                embed_mode = 3
+                    # 3 == only visual
+                    if embed_mode == 3:
+                        print("開始嵌入視覺圖至：")
+                        print(current_ep.title + ".mp4")
+                        embed(VISUAL_DATA, path)
+
+    # old embedding
+    # if args.embed_cover:
+    #     if not args.mp4:
+    #         print("\n請提供 MP4 檔名。")
+    #         print("退出程式")
+    #         sys.exit(1)
+    #     if ep.cover_url != ep.visual_url:
+    #         print("開始嵌入封面")
+    #         embed(ep.cover_data, args.mp4)
+    #     elif args.embed_visual:
+    #         print("\n此集沒有封面。")
+    #         print("開始嵌入視覺圖")
+    #         embed(ep.visual_data, args.mp4)
+    #     else:
+    #         prompt_no_cover(args.url)
+    # elif args.embed_visual:
+    #     if not args.mp4:
+    #         print("\n請提供 MP4 檔名。")
+    #         print("退出程式")
+    #         sys.exit(1)
+    #     print("開始嵌入視覺圖")
+    #     embed(ep.visual_data, args.mp4)
 
 
     # downloading
@@ -393,7 +467,8 @@ else:
         elif questionary.confirm("此集沒有封面欸，要嵌入視覺圖嗎？").ask():
             embed(ep.visual_data, mp4)
         else:
-            prompt_no_cover(url)
+            print("退出程式")
+            sys.exit(0)
     elif task == "下載視覺圖":
         path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
                                 only_directories = True
@@ -417,7 +492,8 @@ else:
             print("開始儲存動畫視覺圖")
             write_pic(path, mode, "visual")
         else:
-            prompt_no_cover(url)
+            print("退出程式")
+            sys.exit(0)
     # elif task == "儲存動畫資訊":
     else:
         data:dict = select_metadata_fields(ep.metadata_as_dict())

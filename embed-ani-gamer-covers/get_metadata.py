@@ -24,7 +24,7 @@ class Episode:
         self.__visual_data  = None
         self.__visual_url   = None
         self.__time         = None
-        self.__agency         = None
+        self.__agency       = None
 
         self.soup = get_soup(url)
         if "動畫瘋" not in self.soup.title.string:
@@ -42,11 +42,20 @@ class Episode:
             data["封面網址"] = self.cover_url
         return data
 
+    def whole_season_url(self):
+        multi_ep = self.soup.find("section", class_="season")
+        if not multi_ep:
+            yield self.url
+            return
+        # example v: "?sn=31322"
+        for v in multi_ep.find_all("a"):
+            yield "https://ani.gamer.com.tw/animeVideo.php" + v["href"]
+
     @property
     def agency(self):
         if self.__agency:
             return self.__agency
-        
+
         print("開始尋找台灣代理")
         t = self.soup.find("ul", class_="data_type").find_all("li")
         self.__agency = t[3].next_element.next_element.next_element
@@ -140,7 +149,7 @@ def get_soup(url):
     return BeautifulSoup(content.text, "html.parser")
 
 def requests_get(url, **kwargs):
-    for try_cnt in range(1,4):
+    for try_cnt in range(1, 4):
         try:
             content = requests.get(url, timeout=10, **kwargs)
             if content.status_code != requests.codes.ok:
