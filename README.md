@@ -53,11 +53,10 @@
 
 ## 引數說明 & 範例
 ```
-zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux -h
 usage: embed-ani-gamer-covers-linux [-h] [-m 檔名] [-v] [-c] [-d 資料夾] [--download-visual [檔名（含路徑）]]
-                              [--download-cover [檔名（含路徑）]] [--metadata [檔名（含路徑）]]
-                              [--overwrite | --no-overwrite] [--version]
-                              sn 碼或網址
+                                    [--download-cover [檔名（含路徑）]] [--metadata [檔名（含路徑）]] [--select [要儲存的欄位]]
+                                    [--overwrite | --no-overwrite] [--dont-make-directory]
+                                    [--version] sn 碼或網址
 
 使用範例：embed-ani-gamer-covers-linux 16231 -m /home/zica/cover/m.mp4 -c -d /home/zica/cover --download-cover --download-visual
 會把Lapis Re：LiGHTs [1]的封面嵌入到/home/zica/cover/m.mp4，並且把封面圖和視覺圖下載到/home/zica/cover。
@@ -68,6 +67,8 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -m 檔名, --mp4 檔名       要嵌入縮圖的 MP4 檔名。
+                        若為資料夾則表示整季的影片都要嵌入封面。
+                        目前僅支援檔名與動畫瘋的標題相同的 MP4。
   -v, --embed-visual    嵌入視覺圖。
   -c, --embed-cover     嵌入封面。
                         也指定「嵌入視覺圖」選項的話則會檢查有無封面，
@@ -86,30 +87,35 @@ options:
   --metadata [檔名（含路徑）]  以 TOML 格式儲存動畫資訊。
                         後面接要儲存的檔名（含路徑），
                         不填的話則使用 -d 指定的路徑，也沒有的話則與 MP4 檔同資料夾。
+  --select [要儲存的欄位]     在互動模式下選擇要儲存哪些動畫資料。
+                        也可以直接在後面加上要儲存哪些欄位，例如：
+                        --select "標題 上架時間 台灣代理"
   --overwrite           若已有與要儲存的檔案同名的檔案就覆寫。
   --no-overwrite        若已有與要儲存的檔案同名的檔案就退出程式，不覆寫。
+  --dont-make-directory, --dont-make-folder
+                        不存在指定資料夾時不建立資料夾，直接退出程式。
   --version             顯示版本號碼。
 
 GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers
-版本：0.1.0
-
+版本：0.2.0
 ```
 ## 互動模式
 也可以不帶引數，只輸入`embed-ani-gamer-covers`，例如：
 ```
-zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux
+zica@zica-VirtualBox:~/shared$ ./embed-ani-gamer-covers-linux
 未選擇選項（引數），因此進入互動模式
 ? 請輸入 sn 碼或網址： 16231
 開始尋找此集標題
 標題：Lapis Re：LiGHTs [1]
 ? 請選擇要程式做的事情： 下載封面
-? 請輸入下載下來的圖片要儲存到哪個資料夾：
+? 請輸入下載下來的圖片要儲存到哪個現有的資料夾（或直接指定檔名）：
  /home/zica/cover/
 開始尋找封面圖網址
 開始尋找視覺圖網址
 開始儲存動畫封面
 開始下載封面
 順利完成！
+5 秒鐘後關閉程式
 ```
 
 
@@ -119,6 +125,8 @@ zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux
 "網址" = "https://ani.gamer.com.tw/animeVideo.php?sn=16231"
 "此季標題" = "Lapis Re：LiGHTs"
 "標題" = "Lapis Re：LiGHTs [1]"
+"上架時間" = "2020/07/04 22:30"
+"台灣代理" = "木棉花"
 "視覺圖網址" = "https://p2.bahamut.com.tw/B/2KU/69/70171e9beae7a766b716bb16901934h5.JPG"
 "封面網址" = "https://p2.bahamut.com.tw/B/2KU/61/55c1764efa50f58e7ae6dbbfb9193w15.JPG"
 ```
