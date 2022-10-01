@@ -224,6 +224,7 @@ if len(sys.argv) > 1:
     overw_group.add_argument("--no-overwrite",
                         action="store_true",
                         help="若已有與要儲存的檔案同名的檔案就退出程式，不覆寫。")
+
     parser.add_argument("--dont-make-directory",
                         "--dont-make-folder",
                         action="store_true",
@@ -312,7 +313,7 @@ if len(sys.argv) > 1:
         embed_mode = None
 
     if embed_mode:
-        if not args.mp4:       
+        if not args.mp4:
             print("\n未提供 MP4 檔名。")
             print("退出程式")
             sys.exit(1)
@@ -470,7 +471,7 @@ else:
             print("退出程式")
             sys.exit(0)
     elif task == "下載視覺圖":
-        path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
+        path = questionary.path("請輸入下載下來的圖片要儲存到哪個一現有的資料夾（或直接指定檔名）：\n",
                                 only_directories = True
                                 ).ask()
         path = valid_path(path, ep.series_title + " 視覺圖.jpg")
@@ -478,7 +479,7 @@ else:
         print("開始儲存動畫視覺圖")
         write_pic(path, mode, "visual")
     elif task == "下載封面":
-        path = questionary.path("請輸入下載下來的圖片要儲存到哪個資料夾（或直接指定檔名）：\n",
+        path = questionary.path("請輸入下載下來的圖片要儲存到哪個現有的資料夾（或直接指定檔名）：\n",
                                 only_directories = True
                                 ).ask()
         if ep.cover_url != ep.visual_url:
@@ -497,7 +498,7 @@ else:
     # elif task == "儲存動畫資訊":
     else:
         data:dict = select_metadata_fields(ep.metadata_as_dict())
-        path = questionary.path("請輸入要儲存到哪個資料夾（或直接指定檔名）：\n",
+        path = questionary.path("請輸入要儲存到哪個現有的資料夾（或直接指定檔名）：\n",
                                 only_directories = True
                                 ).ask()
         path = valid_path(path, ep.title + " 資訊.toml")
