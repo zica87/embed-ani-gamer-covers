@@ -3,7 +3,7 @@
 - 錯誤訊息導向至 stderr
 - split command line mode and interactive mode source code file (and a lib)
 
-## 0.2.0 unreleased
+## 0.2.0 2022/10/1
 - 若指定的資料夾不存在則自動建立
   - 並新增不要建立的的選項
 - 互動模式下也可指定檔名
