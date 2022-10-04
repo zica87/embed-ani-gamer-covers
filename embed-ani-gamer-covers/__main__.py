@@ -140,8 +140,7 @@ def valid_path(path:str, fname:str) -> str:
 def select_metadata_fields(ALL_FIELDS:dict) -> dict:
     choices:list = []
     data:dict = {}
-    for field in ALL_FIELDS.keys():
-        choices.append(questionary.Choice(field, checked=True))
+    choices = [questionary.Choice(field, checked=True) for field in ALL_FIELDS.keys()]
     while True:
         for field in questionary.checkbox("請選擇要儲存的欄位：\n"\
                                           "反白為要選\n"\
