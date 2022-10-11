@@ -53,6 +53,7 @@
 
 ## 引數說明 & 範例
 ```
+zica@zica-VirtualBox:~/cover$ ./embed-ani-gamer-covers-linux -h
 usage: embed-ani-gamer-covers-linux [-h] [-m 檔名] [-v] [-c] [-d 資料夾] [--download-visual [檔名（含路徑）]]
                                     [--download-cover [檔名（含路徑）]] [--metadata [檔名（含路徑）]] [--select [要儲存的欄位]]
                                     [--overwrite | --no-overwrite] [--dont-make-directory]
