@@ -169,7 +169,8 @@ if len(sys.argv) > 1:
                         metavar="檔名",
                         help="要嵌入縮圖的 MP4 檔名。\n"\
                              "若為資料夾則表示整季的影片都要嵌入封面。\n"\
-                             "目前僅支援檔名與動畫瘋的標題相同的 MP4。")
+                             "註：僅嵌入單集的話不限檔名，\n"\
+                             "整季嵌入則僅支援檔名與動畫瘋的標題相同的 MP4。")
     parser.add_argument("-v",
                         "--embed-visual",
                         action="store_true",

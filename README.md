@@ -69,7 +69,8 @@ options:
   -h, --help            show this help message and exit
   -m 檔名, --mp4 檔名       要嵌入縮圖的 MP4 檔名。
                         若為資料夾則表示整季的影片都要嵌入封面。
-                        目前僅支援檔名與動畫瘋的標題相同的 MP4。
+                        註：僅嵌入單集的話不限檔名，
+                        整季嵌入則僅支援檔名與動畫瘋的標題相同的 MP4。
   -v, --embed-visual    嵌入視覺圖。
   -c, --embed-cover     嵌入封面。
                         也指定「嵌入視覺圖」選項的話則會檢查有無封面，
@@ -98,7 +99,7 @@ options:
   --version             顯示版本號碼。
 
 GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers
-版本：0.2.0
+版本：0.2.1
 ```
 ## 互動模式
 也可以不帶引數，只輸入`embed-ani-gamer-covers`，例如：
