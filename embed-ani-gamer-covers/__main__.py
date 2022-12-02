@@ -6,7 +6,7 @@ import tomli_w
 from get_metadata import Episode
 from embed_cover import embed
 
-VERSION = "0.3.0 unreleased"
+VERSION = "0.3.0 source code"
 
 def file_write_mode(path):
     if "args" in globals() and args.overwrite:
