@@ -16,7 +16,7 @@ header = {
 class Episode:
     def __init__(self, url):
         #url = "https://httpbin.org/status/404"
-        self.__url          = url
+        self.url            = url
         self.__series_title = None
         self.__title        = None
         self.__cover_data   = None
@@ -70,10 +70,6 @@ class Episode:
         print("開始尋找上架時間")
         self.__time = self.soup.find("div", class_="anime_info_detail").p.string[5:]
         return self.__time
-
-    @property
-    def url(self):
-        return self.__url
 
     @property
     def series_title(self):
