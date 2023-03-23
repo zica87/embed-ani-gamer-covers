@@ -57,8 +57,7 @@ class Episode:
             return self.__agency
 
         print("開始尋找台灣代理")
-        t = self.soup.find("ul", class_="data_type").find_all("li")
-        self.__agency = t[3].next_element.next_element.next_element
+        self.__agency = self.soup.find_all("li", class_="type")[2].p.string
         return self.__agency
 
     @property
@@ -77,7 +76,7 @@ class Episode:
             return self.__series_title
 
         print("開始尋找此季動畫標題")
-        detail_url = "https:" + self.soup.find_all('a', class_="bluebtn")[-1].get("href")
+        detail_url = "https:" + self.soup.find('a', class_="link-button")["href"]
         detail_soup = get_soup(detail_url)
         self.__series_title = detail_soup.h1.string
         return self.__series_title
