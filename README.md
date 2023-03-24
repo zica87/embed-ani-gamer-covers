@@ -99,7 +99,7 @@ options:
   --version             顯示版本號碼。
 
 GitHub repo 網址：https://github.com/zica87/embed-ani-gamer-covers
-版本：0.2.1
+版本：0.2.2
 ```
 ## 互動模式
 也可以不帶引數，只輸入`embed-ani-gamer-covers`，例如：
